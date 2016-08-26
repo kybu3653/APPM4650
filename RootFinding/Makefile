@@ -1,6 +1,6 @@
 #Now we want to add variables to simplify makefile
 #Use $(variable) to reference variable
-NAME = bisection
+NAME = newton
 OBJS = $(NAME).o
 CPPFLAGS = -std=c++11 -Wall
 PROG = $(NAME)
