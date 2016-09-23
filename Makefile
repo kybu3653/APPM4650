@@ -1,10 +1,11 @@
 #Now we want to add variables to simplify makefile
 #Use $(variable) to reference variable
-OBJS = HW1.o
+NAME = rootFinding
+OBJS = $(NAME).o
 CPPFLAGS = -std=c++11 -Wall
-PROG = HW1
+PROG = $(NAME)
 CC = g++
-FILE = HW1.cpp
+FILE = $(NAME).cpp
 
 $(PROG): $(OBJS)
 	$(CC) -o $(PROG) $(OBJS)
