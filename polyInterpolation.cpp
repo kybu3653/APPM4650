@@ -1,0 +1,88 @@
+#include <stdio.h>
+//#include <iostream>
+#include <cmath>
+
+//x-y values and the length of x and y
+double Lagrange(double x[], double y[], int len){
+    double sum = 0;
+    double value = 1;
+    double val = 8.4;
+    for(int i = 0; i<len; i++){
+        for(int j = 0;j<len;j++){
+            if(j != i){
+                value = value*(val - x[j])/(x[i]-x[j]);
+            }
+        }
+        sum = sum + value*y[i];
+        value = 1;
+    }
+    return sum;
+}
+
+double Neville(double x[],double y[],int i, int j){
+    double x_val = 8.4;
+    if(j  == 0){
+        return y[i];
+    }
+    return (x_val-x[i-j])/(x[i]-x[i-j])*Neville(x,y,i,j-1)+(x_val-x[i])/(x[i-j]-x[i])*Neville(x,y,i-1,j-1);
+}
+
+double Newton_coeff(double x[], double y[], int i, int k){
+    if(k==i){
+        return y[i];
+    }
+    return (Newton_coeff(x,y,i+1,k) - Newton_coeff(x,y,i,k-1))/(x[k]-x[i]);
+}
+
+double Newton(double x[],double y[], int len){
+    double value = 0;
+    double x_val = 8.4;
+    for(int k=0;k<len;k++){
+        double prod = 1;
+        for(int i=0;i<k;i++){
+            prod = prod*(x_val - x[i]);    
+        }
+        value = value + prod*Newton_coeff(x,y,0,k);
+    }
+    
+    return value; 
+}
+int main(){
+    //first order
+    double x1[2] = {8.3,8.6};
+    double y1[2] = {17.56492,18.50515};
+    int c1 = 2;
+    //second order
+    double x21[3] = {8.1,8.3,8.6};
+    double y21[3] = {16.94410,17.56492,18.50515};
+
+    double x22[3] = {8.3,8.6,8.7};
+    double y22[3] = {17.56492,18.50515,18.82091};
+    int c2 = 3;
+    //third order
+    double x3[4] = {8.1,8.3,8.6,8.7};
+    double y3[4] = {16.94410,17.56492,18.50515,18.82091};
+    int c3 = 4;
+    
+    double value1 = Lagrange(x1,y1,c1);
+    double value21 = Lagrange(x21,y21,c2);
+    double value22 = Lagrange(x22,y22,c2);
+    double value3 = Lagrange(x3,y3,c3);
+
+    printf("%s%f\n","Lagrange value1 is ", value1);
+    printf("%s%f\n","Lagrange value21 is ", value21);
+    printf("%s%f\n","Lagrange value22 is ", value22);
+    printf("%s%f\n\n","Lagrange value2 is ", value3);
+
+    printf("%s%f\n","Neville value 1 is ", Neville(x1,y1,c1,c1));
+    printf("%s%f\n","Neville value 21 is ", Neville(x21,y21,c2,c2));
+    printf("%s%f\n","Neville value 22 is ", Neville(x22,y22,c2,c2));
+    printf("%s%f\n\n","Neville value 3 is ", Neville(x3,y3,c3,c3));
+
+    printf("%s%f\n","Newton value 1 is ", Newton(x1,y1,c1));
+    printf("%s%f\n","Newton value 21 is ", Newton(x21,y21,c2));
+    printf("%s%f\n","Newton value 22 is ", Newton(x22,y22,c2));
+    printf("%s%f\n\n","Newton value 3 is ", Newton(x3,y3,c3));
+ 
+    return 0;
+}
