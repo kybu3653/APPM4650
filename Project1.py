@@ -25,11 +25,10 @@ def bisection(a, b, count):
 
 ##INTEGRATION
 def lateExp(x):
-    return 3/(exp(x)-3*x)
+    return 1/(exp(x)-x)
 
 def SimpsonsMethod(lower,upper,step,f):
     fsum = f(lower)+f(upper)
-    print fsum
     iterations = int(ceil((upper-lower)/step))
     x = step
     for i in range(1,iterations):
@@ -40,21 +39,20 @@ def SimpsonsMethod(lower,upper,step,f):
         x = x+step
     return step/3*fsum
 
-def Trapezoidal(lower,upper,step,f):
-    fsum = f(lower) + f(upper)
+def SimpsonsMethod(lower,upper,step,f):
+    fsum = f(lower)+f(upper)
+    iterations = int(ceil((upper-lower)/step))
     x = step
-    while x < upper:
-        fsum = fsum + 2*f(x)
+    for i in range(1,iterations):
+        if i%2 == 1: #odd
+            fsum = fsum + 4*f(x)
+        else:
+            fsum = fsum + 2*f(x)
         x = x+step
-    return 1/2*step*fsum
+    return step/3*fsum
 
-def GaussianQuadrature(n,g):
-    if n==2:
-        return g(-1/sqrt(3)) + g(1/sqrt(3))
-    elif n==3:
-        a = sqrt(3/5)
-        return 8/9*g(0)+5/9*(g(a)+g(-a))
 
+#ODE solving
 
 def f(x,y):
     return exp(y)/3-y #fizzle data delta = 1/3
@@ -73,10 +71,6 @@ def RK4(IC,h,upper,f):
         k3 = f(x+h/2,y+k2/2)*h
         k4 = f(x+h,y+k3)*h
         est.append((x+h,y+(k1+2*(k2+k3)+k4)/6)) 
-    #for i in range(0,len(est)):
-    #    x = est[i][0]
-    #    y = est[i][1]
-    #    print('{',y,',',x,'},')
     return est
 
 def fizzle(plot):
@@ -87,8 +81,8 @@ def fizzle(plot):
     if plot:
         x_fiz = [x[0] for x in fizzle]
         y_fiz = [x[1] for x in fizzle]
-        plt.plot(x_fiz,y_fiz,'black')           #fit points
-        plt.plot(x_fiz,y_fiz,'.',color = 'black')      #plot points
+        plt.plot(x_fiz,y_fiz,'black')           
+        plt.plot(x_fiz,y_fiz,'.',color = 'black')      
         plt.ylabel("y label")
         plt.xlabel("x label")
         plt.title("TITLE")
@@ -104,13 +98,16 @@ def fizzle(plot):
         plt.show()
 
 def explosion(plot):
-    explosion = RK4((0,0),.1,10,e)
-    print(SimpsonsMethod(0,25,.1,lateExp))
-    print(Trapezoidal(0,20,.1,lateExp))
+    explosion = RK4((0,0),.1,16,e)
+    sigma_exp = SimpsonsMethod(0,45,.1,lateExp)
     if plot:
         x_exp = [x[1] for x in explosion]
         y_exp = [x[0] for x in explosion]
-
+        plt.title("TITLE")
+        x = np.arange(0, 16, 0.1);
+        y = sigma_exp-1/np.exp(x)
+        plt.plot(y,x)
+        plt.axvline(sigma_exp,color = 'red')
         plt.plot(x_exp,y_exp,'black')
         plt.plot(x_exp,y_exp,'.',color='black')
         plt.ylabel("y label")
@@ -119,5 +116,5 @@ def explosion(plot):
 
 plot = int(raw_input("Plot? 1/0 "))
 
-fizzle(plot)
-#explosion(plot)
+#fizzle(plot)
+explosion(plot)
