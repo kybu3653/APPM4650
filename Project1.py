@@ -1,5 +1,8 @@
 #!/bin/usr/env python
 
+from matplotlib import rc
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('text', usetex=True)
 from math import exp,ceil
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -13,7 +16,7 @@ def bisection(a, b, count):
     mid = (a+b)/2
     
     temp = (mid-a)/a
-    if (temp > .01 or temp < -.01):
+    if (temp > .0001 or temp < -.0001):
         value = lf(a)*lf(mid)
         if value > 0:
             return bisection(mid, b, count+1)
@@ -73,48 +76,59 @@ def RK4(IC,h,upper,f):
         est.append((x+h,y+(k1+2*(k2+k3)+k4)/6)) 
     return est
 
-def fizzle(plot):
-    plotrange = 16
-    fizzle = RK4((0,0),.1,plotrange,f)
-    theta_fizz = bisection(0.5,1,0)
+def fizzle(plot,h,upper):
+    theta_fizz = bisection(.5,1,0)
+    fizzle = RK4((0,0),h,upper,f)
+    print fizzle
     print(theta_fizz)
     if plot:
         x_fiz = [x[0] for x in fizzle]
         y_fiz = [x[1] for x in fizzle]
         plt.plot(x_fiz,y_fiz,'black')           
-        plt.plot(x_fiz,y_fiz,'.',color = 'black')      
-        plt.ylabel("y label")
-        plt.xlabel("x label")
-        plt.title("TITLE")
-        x = np.arange(0, plotrange, 0.1);
+#        plt.plot(x_fiz,y_fiz,'.',color = 'black')      
+        #plt.xlabel("sigma")
+        plt.rc('text', usetex=True)
+        plt.rc('font', family='serif')
+        plt.xlabel(r'$\sigma$', size = 20)
+        plt.ylabel(r"$\theta$",size = 20)
+        plt.title( r"Fizzle ($\delta = 1/3$)",size = 20)
+        x = np.arange(0, 1, h)
         y = -.5*(np.exp(-2*x/3)-1)
         plt.plot(x, y)
-        theta_fizz = theta_fizz+0*x
-        plt.plot(x,theta_fizz,'--',color = "red")
+        x1 = np.arange(11,upper,h)
+        theta_fizz = theta_fizz+0*x1
+        plt.plot(x1,theta_fizz,color = "red")
         red_patch = mpatches.Patch(color='red', label='Late Fizzle')
         blue_patch = mpatches.Patch(color='blue', label='Early Fizzle')
         black_patch = mpatches.Patch(color = 'black',label='Numerical Approximation') 
-        plt.legend(handles=[black_patch,blue_patch, red_patch],loc='lower right')
+        plt.legend(handles=[black_patch,blue_patch, red_patch],loc='lower right',fontsize=13)
         plt.show()
 
-def explosion(plot):
-    explosion = RK4((0,0),.1,16,e)
-    sigma_exp = SimpsonsMethod(0,45,.1,lateExp)
+def explosion(plot,h,upper):
+    explosion = RK4((0,0),h,upper,e)
+    sigma_exp = SimpsonsMethod(0,15,h,lateExp)
+    print(sigma_exp)
     if plot:
         x_exp = [x[1] for x in explosion]
         y_exp = [x[0] for x in explosion]
-        plt.title("TITLE")
-        x = np.arange(0, 16, 0.1);
+        plt.title(r"Explosion ($\delta = 1$)",size = 20)
+        x = np.arange(1.3, upper, h)
         y = sigma_exp-1/np.exp(x)
-        plt.plot(y,x)
-        plt.axvline(sigma_exp,color = 'red')
-        plt.plot(x_exp,y_exp,'black')
-        plt.plot(x_exp,y_exp,'.',color='black')
-        plt.ylabel("y label")
-        plt.xlabel("x label")
+        x1 = np.arange(0,.7,h) 
+        plt.plot(x1,x1,color = 'blue') #early explosion
+        plt.plot(y,x,color = 'red')  #late explosion
+        plt.plot(x_exp,y_exp,'black')  #numerical approx
+#        plt.plot(x_exp,y_exp,'.',color='black')
+        plt.ylabel(r"$\theta$",size = 20)
+        plt.xlabel(r"$\sigma$",size = 20)
+        red_patch = mpatches.Patch(color='red', label='Late Explosion')
+        blue_patch = mpatches.Patch(color='blue', label='Early Explosion')
+        black_patch = mpatches.Patch(color = 'black',label='Numerical Approximation') 
+        plt.legend(handles=[black_patch,blue_patch, red_patch],loc=2,fontsize = 13)
         plt.show()
 
-plot = int(raw_input("Plot? 1/0 "))
-
-#fizzle(plot)
-explosion(plot)
+plot = 1#int(raw_input("Plot? 1/0 "))
+step_size = .01#float(raw_input("Step Size? "))
+upper_bound = 15#int(raw_input("Upper Bound? "))
+fizzle(plot,step_size,upper_bound)
+explosion(plot,step_size,upper_bound)

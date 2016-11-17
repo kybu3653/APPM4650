@@ -3,7 +3,9 @@
 from math import exp,ceil,sqrt
 
 def f(x):
-    return pow(x,2)*exp(-pow(x,2))
+    #return pow(x,2)*exp(-pow(x,2))
+    val = exp(x) - 3*x
+    return 3/val
 
 def CompositeMidpoint(lower,upper,step):
     iterations = ceil((upper-lower)/step)
@@ -45,8 +47,8 @@ def GaussianQuadrature(n):
         a = sqrt(3/5)
         return 8/9*g(0)+5/9*(g(a)+g(-a))
 
-print("Composite Method: ",CompositeMidpoint(0,2,.25))
-print("Trapezoidal Method: ",TrapezoidalMethod(0,2,.25))
-print("Simpson's 1/3 Rule: ", SimpsonsMethod(0,2,.25))
-print("Gaussian Quadrature n=2", GaussianQuadrature(2))
-print("Gaussian Quadrature n=3", GaussianQuadrature(3))
+print("Composite Method: ",CompositeMidpoint(0,30,.25))
+print("Trapezoidal Method: ",TrapezoidalMethod(0,30,.25))
+print("Simpson's 1/3 Rule: ", SimpsonsMethod(0,30,.25))
+#print("Gaussian Quadrature n=2", GaussianQuadrature(2))
+#print("Gaussian Quadrature n=3", GaussianQuadrature(3))
