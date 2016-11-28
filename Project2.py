@@ -2,15 +2,24 @@
 
 import math
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
-def f1(y):
+def f1(y,n):              #y1'
     return y[1]
 
-def f2(y):
+def f2(y,n):              #y2'
     return y[2]
 
-def f3(y):
+def f3(y,n):                  #y3'
     return -1*(y[0]*y[2])/2
+
+def f4(n):                  #F'(n)
+    return F[1][n][1]
+
+def g1(y,n):                   #y4'
+    return y[1]
+def g2(y,n):                   #y5'
+    return -1*PR*f4(n)*y[1]
 
 def RK4(h,upper,IC,f,n):
     length = len(IC)
@@ -21,7 +30,7 @@ def RK4(h,upper,IC,f,n):
     for index in range(iterations):
         for j in range(4):
             for i in range(length):
-                k[i][j] = f[i](IC)
+                k[i][j] = f[i](IC,index)
             if j == 3:
                 mult = 1
             else:
@@ -35,17 +44,40 @@ def RK4(h,upper,IC,f,n):
             
     return retList
 
-
-def makePlot(f):
-    x = [element[0] for element in f]
-    y = [element[1] for element in f]
-    plt.plot(x,y)
+def makePlot(f,title,legend):
+    colors = ["red","blue","purple","cyan"]
+    patches = []
+    for i in range(len(f)):
+        x = [element[0] for element in f[i]]
+        y = [element[1] for element in f[i]]
+        plt.plot(x,y,color = colors[i]) 
+        patch = mpatches.Patch(color = colors[i],label = legend[i])
+        patches.append(patch)
+    plt.legend(handles=patches)
+    plt.title(title,size = 20)
     plt.show()
 
 f = [f1,f2,f3]
 val = .30346 #float(raw_input("F''? "))
 F = RK4(.1,10,[0,0,val],f,0)
 length = len(F[1])
+#print F[1][len(F[1])-1]
 
-print F[1][length-1]
-makePlot(F[1])
+g = [g1,g2]
+#g_prime1 = float(raw_input("G'? "))
+Prandtl = [.2,1,4,8]
+g_prime = [-.14537,-.3909,-.73844,-.978535]
+plott = []
+legend = []
+for i in range(len(Prandtl)):
+    PR = Prandtl[i]
+    legend.append(str(PR))
+    G = RK4(.1,10,[1,g_prime[i]],g,0)
+    #print G[0][len(G[0])-1]
+    plott.append(G[0])
+makePlot(plott,"G(X)",legend)
+plot = 0 #int(raw_input("Plot? "))
+if plot == 1:
+    makePlot([F[0]],"F(X)")
+    makePlot([F[1]],"F'(X)")
+    makePlot([F[2]],"F''(X)")
