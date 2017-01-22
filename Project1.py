@@ -79,8 +79,6 @@ def RK4(IC,h,upper,f):
 def fizzle(plot,h,upper):
     theta_fizz = bisection(.5,1,0)
     fizzle = RK4((0,0),h,upper,f)
-    print fizzle
-    print(theta_fizz)
     if plot:
         x_fiz = [x[0] for x in fizzle]
         y_fiz = [x[1] for x in fizzle]
@@ -107,7 +105,6 @@ def fizzle(plot,h,upper):
 def explosion(plot,h,upper):
     explosion = RK4((0,0),h,upper,e)
     sigma_exp = SimpsonsMethod(0,15,h,lateExp)
-    print(sigma_exp)
     if plot:
         x_exp = [x[1] for x in explosion]
         y_exp = [x[0] for x in explosion]

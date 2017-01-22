@@ -1,5 +1,5 @@
-# NumericalAnalysis
-Includes numerical methods from APPM 4650 such as: 
-  1) Root Finding
-  2) Polynomial Fitting
+sudo apt-get install python-matplotlib
+sudo apt-get install texlive-latex-extra
+sudo apt-get install dvipng
+sudo apt-get build-dep python-matplotlib
 
